@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">LoadApp</string>
+
+    <string name="app_description">Download files from Internet</string>
+    <string name="action_settings">Settings</string>
+
+
+    <string name="notification_title">Udacity: Android Kotlin Nanodegree </string>
+    <string name="notification_description">The Project 3 repository is downloaded</string>
+    <string name="notification_button">See changes</string>
+
+    <string name="notification_id" >udacity notification</string>
+
+    <string name="notification_channel_id" >download done notification</string>
+    <string name="notification_channel_name" >Udacity Download Notification</string>
+    <string name="notification_channel_description" >Udacity Show Download Done Notification</string>
+
+    <string name="button_name">Click me</string>
+    <string name="button_loading">We are loading </string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="send_button">Send Button</string>
+    <string name="Glide">github.com/bumptech/glide</string>
+    <string name="Advanced_Android_Project_Starter">github.com/udacity/nd940-c3-advanced-android-programming-project-starter</string>
+    <string name="Retrofit">github.com/square/retrofit</string>
+</resources>
