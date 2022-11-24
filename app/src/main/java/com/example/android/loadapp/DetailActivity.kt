@@ -1,5 +1,6 @@
 package com.example.android.loadapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
@@ -13,5 +14,9 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.layout.ok.setOnClickListener {
+            navigateUpTo(Intent(this.applicationContext, MainActivity::class.java))
+        }
     }
 }

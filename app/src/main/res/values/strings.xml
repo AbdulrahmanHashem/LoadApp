@@ -19,7 +19,7 @@
     <string name="button_loading">We are loading </string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="send_button">Send Button</string>
-    <string name="Glide">github.com/bumptech/glide</string>
-    <string name="Advanced_Android_Project_Starter">github.com/udacity/nd940-c3-advanced-android-programming-project-starter</string>
-    <string name="Retrofit">github.com/square/retrofit</string>
+    <string name="Glide">Glide - Image Loading Library by BumpTech</string>
+    <string name="Advanced_Android_Project_Starter">LoadApp - Current Repository by Udacity</string>
+    <string name="Retrofit">Retrofit - Type-Safe HTTP Client for Android and Java by Square. Inc</string>
 </resources>

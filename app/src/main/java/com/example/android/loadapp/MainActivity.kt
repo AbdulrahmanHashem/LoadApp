@@ -1,6 +1,7 @@
 package com.example.android.loadapp
 
 import android.app.DownloadManager
+import android.app.Notification.EXTRA_NOTIFICATION_ID
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,9 +13,11 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.os.bundleOf
 import com.example.android.loadapp.databinding.ActivityMainBinding
 
 //import kotlinx.android.synthetic.main.activity_main.*
@@ -69,12 +72,12 @@ class MainActivity : AppCompatActivity() {
 
             val mainView = context as MainActivity
             mainView.binding.layout.customButton.buttonState = ButtonState.Completed
-
-            try {
-                sendNotification()
-            } catch (e: Exception) {
-                println(e.message)
-            }
+            val bundle = bundleOf(
+                "File Name" to findViewById<RadioButton>(binding.layout.radioGroup.checkedRadioButtonId).text,
+                "Status" to "Success"
+            )
+            println(bundle)
+            sendNotification(bundle)
         }
     }
 
@@ -116,24 +119,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendNotification() {
-        val notificationIntent = Intent(applicationContext, DetailActivity::class.java)
-        pendingIntent = PendingIntent.getActivity(
-            applicationContext,
-            notificationID,
-            notificationIntent,
-            PendingIntent.FLAG_IMMUTABLE)
+    private fun sendNotification(bundle: Bundle) {
+        createNotificationNavigationIntent()
 
         val builder = NotificationCompat.Builder(applicationContext, getString(R.string.notification_channel_id))
             .setSmallIcon(R.drawable.ic_assistant_black_24dp)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(getString(R.string.notification_description))
             .setContentIntent(pendingIntent)
+            .addAction(R.drawable.ic_assistant_black_24dp, "Show Download Status", pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
+            .setExtras(bundle)
 
         with(NotificationManagerCompat.from(this)) {
             notify(notificationID, builder.build())
         }
+    }
+
+    private fun createNotificationNavigationIntent(){
+        val notificationIntent = Intent(applicationContext, DetailActivity::class.java)
+        pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            notificationID,
+            notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE)
     }
 }
