@@ -1,5 +1,7 @@
 package com.example.android.loadapp
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +21,16 @@ class DetailActivity : AppCompatActivity() {
             System.exit(0)
         }
 
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+
         binding.layout.downloadable.text = intent.getBundleExtra("Download Info")?.getString("File Name")
         binding.layout.downloadStatus.text = intent.getBundleExtra("Download Info")?.getString("Status")
     }
+
+//    override fun onNewIntent(intent: Intent?) {
+//        super.onNewIntent(intent)
+//        binding.layout.downloadable.text = intent?.getBundleExtra("Download Info")?.getString("File Name")
+//        binding.layout.downloadStatus.text = intent?.getBundleExtra("Download Info")?.getString("Status")
+//    }
 }

@@ -1,11 +1,15 @@
 package com.example.android.loadapp
 
 import android.animation.*
+import android.app.DownloadManager
 import android.content.Context
+import android.content.Context.DOWNLOAD_SERVICE
+import android.database.Cursor
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.LinearInterpolator
+import android.widget.RadioButton
+import androidx.core.os.bundleOf
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(
@@ -14,7 +18,7 @@ class LoadingButton @JvmOverloads constructor(
     private var widthSize = 0
     private var heightSize = 0
 
-    private val valueAnimator = ValueAnimator()
+    val valueAnimator = ValueAnimator()
 
     var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
         when (new){
@@ -32,6 +36,8 @@ class LoadingButton @JvmOverloads constructor(
         }
 
     var buttonText = "Download"
+
+    val downloadID = 0L
 
     private val rectF = RectF(0f, 5f, 0f, 80f)
 
