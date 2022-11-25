@@ -1,15 +1,11 @@
 package com.example.android.loadapp
 
 import android.animation.*
-import android.app.DownloadManager
 import android.content.Context
-import android.content.Context.DOWNLOAD_SERVICE
-import android.database.Cursor
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import android.widget.RadioButton
-import androidx.core.os.bundleOf
+import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(
@@ -37,8 +33,6 @@ class LoadingButton @JvmOverloads constructor(
 
     var buttonText = "Download"
 
-    val downloadID = 0L
-
     private val rectF = RectF(0f, 5f, 0f, 80f)
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -48,9 +42,20 @@ class LoadingButton @JvmOverloads constructor(
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
+    private var textColor = 0
+    private var loadingColor = 0
+    private var loadingCircleColor = 0
+    private var buttonBackgroundColor = 0
 
     init {
         isClickable = true
+
+        context.withStyledAttributes(attrs, R.styleable.LoadingButton){
+            textColor = getColor(R.styleable.LoadingButton_textColor, Color.WHITE)
+            loadingColor = getColor(R.styleable.LoadingButton_loadingColor, Color.GREEN)
+            loadingCircleColor = getColor(R.styleable.LoadingButton_loadingCircleColor, Color.YELLOW)
+            buttonBackgroundColor = getColor(R.styleable.LoadingButton_buttonBackgroundColor, Color.GRAY)
+        }
     }
 
     private fun loadingAnimationAnimator(value1: Int, value2: Int, duration: Long) {
@@ -80,11 +85,11 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.GRAY)
+        canvas.drawColor(buttonBackgroundColor)
         canvas.drawText(buttonText, measuredWidth/2f, (measuredHeight/2f) + 20f,
             paint.apply {
-                color = Color.WHITE
-                alpha = 100
+                color = textColor
+                alpha = 1000
             })
 
         canvas.drawArc(rectF.apply {
@@ -93,12 +98,12 @@ class LoadingButton @JvmOverloads constructor(
             top = (measuredHeight/2f) - 40f
             bottom = (measuredHeight/2f) + 40f
                                    },
-            0f, (3.6 * progress).toFloat(),true, paint)
+            0f, (3.6 * progress).toFloat(),true, paint.apply { color = loadingCircleColor})
 
         canvas.drawRect(0f, 0f, (measuredWidth/100f) * progress ,
             measuredHeight.toFloat(),
             paint.apply {
-                color = Color.GREEN
+                color = loadingColor
                 alpha = 60
             }
         )
