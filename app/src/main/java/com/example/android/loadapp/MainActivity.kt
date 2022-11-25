@@ -12,12 +12,14 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.setMargins
 import com.example.android.loadapp.databinding.ActivityMainBinding
 
 private val notificationID = 0
@@ -34,7 +36,22 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var URL: String = ""
+    private val URL: String
+        get() {
+            if (binding.layout.radioGroup.checkedRadioButtonId != -1){
+                return findViewById<RadioButton>(
+                    binding.layout.radioGroup.checkedRadioButtonId
+                )
+                    .contentDescription.toString()
+            } else {
+                return ""
+            }
+        }
+
+    private val viewItems = mapOf(
+        "Glide - Image Loading Library by BumpTech" to "https://github.com/bumptech/glide/archive/refs/heads/master.zip",
+        "LoadApp - Current Repository by Udacity" to "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/refs/heads/master.zip",
+        "Retrofit - Type-Safe HTTP Client for Android and Java by Square. Inc" to "https://github.com/square/retrofit/archive/refs/heads/master.zip")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +66,19 @@ class MainActivity : AppCompatActivity() {
 
         downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
 
-        binding.layout.radioGroup.setOnCheckedChangeListener { oldViewID, newViewID ->
-            URL = when (newViewID) {
-                binding.layout.glideRB.id -> "https://github.com/bumptech/glide/archive/refs/heads/master.zip"
-                binding.layout.projectRB.id -> "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/refs/heads/master.zip"
-                binding.layout.retrofitRB.id -> "https://github.com/square/retrofit/archive/refs/heads/master.zip"
-                else -> ""
+        for (item in viewItems) {
+            val radioButton = RadioButton(applicationContext)
+            radioButton.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(50)
             }
+
+            radioButton.text = item.key
+            radioButton.contentDescription = item.value
+
+            binding.layout.radioGroup.addView(radioButton)
         }
 
         binding.layout.customButton.setOnClickListener {
