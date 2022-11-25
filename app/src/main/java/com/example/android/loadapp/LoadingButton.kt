@@ -22,9 +22,9 @@ class LoadingButton @JvmOverloads constructor(
 
     var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
         when (new){
-            ButtonState.Loading -> loadingAnimationAnimator(0, 80,5000)
+            ButtonState.Loading -> loadingAnimationAnimator(0, 80,8000)
             ButtonState.Completed -> loadingAnimationAnimator(progress, 100, 500)
-            else -> 0
+            else -> {}
         }
     }
 
