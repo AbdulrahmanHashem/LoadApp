@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
 
+    private lateinit var downloadManager: DownloadManager
+
     private lateinit var binding: ActivityMainBinding
 
     companion object {
@@ -47,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+
+        downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
 
         binding.layout.radioGroup.setOnCheckedChangeListener { oldViewID, newViewID ->
             URL = when (newViewID) {
@@ -66,7 +70,6 @@ class MainActivity : AppCompatActivity() {
         }
         binding.layout.customButton.valueAnimator.doOnEnd {
             if (binding.layout.customButton.buttonState == ButtonState.Loading){
-                val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
                 val query = DownloadManager.Query()
                 query.setFilterById(downloadID)
                 val cursor: Cursor = downloadManager.query(query)
@@ -85,7 +88,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendDownloadUpdate(Status: String){
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadManager.remove(downloadID)
         binding.layout.customButton.buttonState = ButtonState.Completed
         val bundle = bundleOf(
@@ -116,7 +118,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-            val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             downloadID =
                 downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
@@ -165,9 +166,7 @@ class MainActivity : AppCompatActivity() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
-        with(NotificationManagerCompat.from(this)) {
-            notify(notificationID, builder.build())
-        }
+        notificationManager.notify(notificationID, builder.build())
     }
 
     private fun createNotificationNavigationIntent(bundle: Bundle = Bundle()) {
