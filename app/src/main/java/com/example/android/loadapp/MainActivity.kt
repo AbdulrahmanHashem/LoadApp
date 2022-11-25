@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.bundleOf
 import com.example.android.loadapp.databinding.ActivityMainBinding
 
@@ -35,9 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    companion object {
-        private var URL: String? = ""
-    }
+    private var URL: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 binding.layout.glideRB.id -> "https://github.com/bumptech/glide/archive/refs/heads/master.zip"
                 binding.layout.projectRB.id -> "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/refs/heads/master.zip"
                 binding.layout.retrofitRB.id -> "https://github.com/square/retrofit/archive/refs/heads/master.zip"
-                else -> null
+                else -> ""
             }
         }
 
@@ -106,26 +103,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun download() {
-        URL?.let {
-            val request =
-                DownloadManager.Request(Uri.parse(URL))
-                    .setTitle(getString(R.string.app_name))
-                    .setDescription(getString(R.string.app_description))
-                    .setAllowedOverMetered(true)
-                    .setAllowedOverRoaming(true).apply {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            setRequiresCharging(false)
-                        }
+        val request =
+            DownloadManager.Request(Uri.parse(URL))
+                .setTitle(getString(R.string.app_name))
+                .setDescription(getString(R.string.app_description))
+                .setAllowedOverMetered(true)
+                .setAllowedOverRoaming(true).apply {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        setRequiresCharging(false)
                     }
+                }
 
-            downloadID =
-                downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+        downloadID =
+            downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
-            if (downloadID != 0L){
-                binding.layout.customButton.buttonState = ButtonState.Loading
-            } else {
-                Toast.makeText(applicationContext, "Download Failed To Start", Toast.LENGTH_SHORT).show()
-            }
+        if (downloadID != 0L){
+            binding.layout.customButton.buttonState = ButtonState.Loading
+        } else {
+            Toast.makeText(applicationContext, "Download Failed To Start", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -135,8 +130,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.notification_channel_id),
                 getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
-                .apply { setShowBadge(false) }
+            ).apply { setShowBadge(false) }
 
             channel.description = getString(R.string.notification_description)
 
