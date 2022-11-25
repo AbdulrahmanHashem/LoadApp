@@ -18,8 +18,8 @@ class LoadingButton @JvmOverloads constructor(
 
     var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
         when (new){
-            ButtonState.Loading -> loadingAnimationAnimator(5000)
-            ButtonState.Completed -> loadingAnimationAnimator(500)
+            ButtonState.Loading -> loadingAnimationAnimator(0, 80,5000)
+            ButtonState.Completed -> loadingAnimationAnimator(progress, 100, 500)
             else -> 0
         }
     }
@@ -47,11 +47,11 @@ class LoadingButton @JvmOverloads constructor(
         isClickable = true
     }
 
-    private fun loadingAnimationAnimator(duration: Long) {
+    private fun loadingAnimationAnimator(value1: Int, value2: Int, duration: Long) {
         valueAnimator.addUpdateListener { animation ->
             this.progress = animation.animatedValue as Int
         }
-        valueAnimator.setIntValues(100)
+        valueAnimator.setIntValues(value1, value2)
         valueAnimator.duration = duration
 //        valueAnimator.interpolator = LinearInterpolator()
         buttonText = "We Are Loading"
@@ -59,8 +59,10 @@ class LoadingButton @JvmOverloads constructor(
 
         valueAnimator.addListener(object : AnimatorListenerAdapter(){
             override fun onAnimationEnd(animation: Animator) {
-                progress = 0
-                buttonText = "Download"
+                if (buttonState == ButtonState.Completed){
+                    progress = 0
+                    buttonText = "Download"
+                }
             }
         })
     }

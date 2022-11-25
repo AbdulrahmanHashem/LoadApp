@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -36,9 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     companion object {
-        private var URL: String? =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-        private const val CHANNEL_ID = "channelId"
+        private var URL: String? = ""
+//        private const val CHANNEL_ID = "channelId"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,8 +51,9 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+//        DownloadManager.STATUS_FAILED
 
-        binding.layout.radioGroup.setOnCheckedChangeListener{ oldViewID, newViewID ->
+        binding.layout.radioGroup.setOnCheckedChangeListener { oldViewID, newViewID ->
             URL = when (newViewID) {
                 binding.layout.glideRB.id -> "https://github.com/bumptech/glide/archive/refs/heads/master.zip"
                 binding.layout.projectRB.id -> "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/refs/heads/master.zip"
@@ -62,7 +63,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.layout.customButton.setOnClickListener {
-            download()
+            if (URL == ""){
+                Toast.makeText(applicationContext, "Please Select a File To Download!", Toast.LENGTH_SHORT).show()
+            } else {
+                download()
+            }
         }
     }
 
@@ -76,7 +81,6 @@ class MainActivity : AppCompatActivity() {
                 "File Name" to findViewById<RadioButton>(binding.layout.radioGroup.checkedRadioButtonId).text,
                 "Status" to "Success"
             )
-            println(bundle)
             sendNotification(bundle)
         }
     }
@@ -97,7 +101,12 @@ class MainActivity : AppCompatActivity() {
             val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             downloadID =
                 downloadManager.enqueue(request)// enqueue puts the download request in the queue.
-            binding.layout.customButton.buttonState = ButtonState.Loading
+
+            if (downloadID != 0L){
+                binding.layout.customButton.buttonState = ButtonState.Loading
+            } else {
+                Toast.makeText(applicationContext, "Download Failed To Start", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -106,7 +115,8 @@ class MainActivity : AppCompatActivity() {
             val channel = NotificationChannel(
                 getString(R.string.notification_channel_id),
                 getString(R.string.notification_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
                 .apply { setShowBadge(false) }
 
             channel.description = getString(R.string.notification_description)
@@ -119,30 +129,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendNotification(bundle: Bundle) {
-        createNotificationNavigationIntent()
+    private fun sendNotification(bundle: Bundle = Bundle()) {
+        createNotificationNavigationIntent(bundle)
 
-        val builder = NotificationCompat.Builder(applicationContext, getString(R.string.notification_channel_id))
+        val builder = NotificationCompat.Builder(
+            applicationContext,
+            getString(R.string.notification_channel_id)
+        )
             .setSmallIcon(R.drawable.ic_assistant_black_24dp)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(getString(R.string.notification_description))
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_assistant_black_24dp, "Show Download Status", pendingIntent)
+//            .addAction(action)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .setExtras(bundle)
 
         with(NotificationManagerCompat.from(this)) {
             notify(notificationID, builder.build())
         }
     }
 
-    private fun createNotificationNavigationIntent(){
-        val notificationIntent = Intent(applicationContext, DetailActivity::class.java)
+    private fun createNotificationNavigationIntent(bundle: Bundle = Bundle()) {
+        val notificationIntent = Intent(this, DetailActivity::class.java)
+            .putExtra("Download Info", bundle)
         pendingIntent = PendingIntent.getActivity(
             applicationContext,
             notificationID,
             notificationIntent,
-            PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.FLAG_MUTABLE
+        )
+
     }
 }
+

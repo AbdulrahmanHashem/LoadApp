@@ -2,8 +2,8 @@ package com.example.android.loadapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.persistableBundleOf
 import com.example.android.loadapp.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
@@ -16,7 +16,10 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.layout.ok.setOnClickListener {
-            navigateUpTo(Intent(this.applicationContext, MainActivity::class.java))
+            System.exit(0)
         }
+
+        binding.layout.downloadable.text = intent.getBundleExtra("Download Info")?.getString("File Name")
+        binding.layout.downloadStatus.text = intent.getBundleExtra("Download Info")?.getString("Status")
     }
 }
