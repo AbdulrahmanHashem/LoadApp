@@ -64,7 +64,6 @@ class LoadingButton @JvmOverloads constructor(
         }
         valueAnimator.setIntValues(value1, value2)
         valueAnimator.duration = duration
-//        valueAnimator.interpolator = LinearInterpolator()
         buttonText = "We Are Loading"
         valueAnimator.start()
 

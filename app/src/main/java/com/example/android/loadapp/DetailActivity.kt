@@ -18,7 +18,7 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.layout.ok.setOnClickListener {
-            System.exit(0)
+            navigateUpTo(Intent(applicationContext, MainActivity::class.java))
         }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -27,10 +27,4 @@ class DetailActivity : AppCompatActivity() {
         binding.layout.downloadable.text = intent.getBundleExtra("Download Info")?.getString("File Name")
         binding.layout.downloadStatus.text = intent.getBundleExtra("Download Info")?.getString("Status")
     }
-
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-//        binding.layout.downloadable.text = intent?.getBundleExtra("Download Info")?.getString("File Name")
-//        binding.layout.downloadStatus.text = intent?.getBundleExtra("Download Info")?.getString("Status")
-//    }
 }

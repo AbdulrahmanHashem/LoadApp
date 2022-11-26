@@ -29,8 +29,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".DetailActivity"
-            >
+            android:name=".DetailActivity">
         </activity>
 
     </application>
